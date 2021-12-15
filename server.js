@@ -44,7 +44,25 @@ app.get('/sauces/:id', async (req, res) => {
 })
 
 //New Routes go here: 
+app.get("/new-sauce",(req,res) =>{
+    const sauceAlert = ""
+    res.render("newSauceForm", {sauceAlert})
+})
 
+app.post("/new-sauce",async(req,res)=>{
+    //Add sauce to db based on html form data
+    const newSauce = await Sauce.create(req.body)
+//create a sauceAlert to pass to the template
+let sauceAlert = "${newSauce.name} added to your database"
+   const foundSauce = await Sauce.findByPk(newSauce.id)
+   if(foundSauce){
+       res.render('newSauceForm',{sauceAlert})
+   }else{
+       sauceAlert = "Failed to add sauce"
+       res.render('newSauceForm',{sauceAlert})
+   }
+    console.log(newSauce)
+})
 
 //serving is now listening to PORT
 app.listen(PORT, () => {
